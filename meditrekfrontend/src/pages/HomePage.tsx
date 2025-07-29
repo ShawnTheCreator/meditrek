@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
-=======
->>>>>>> f212c1fe154cdba9ed3a9744d9bee14425dbc580
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Activity, Bell, Users } from 'lucide-react';
 import CapsuleAnimation from '../components/CapsuleAnimation';
@@ -64,7 +61,6 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </div>
-<<<<<<< HEAD
       </nav>
 
       {/* Hero Section */}
@@ -102,9 +98,17 @@ const HomePage: React.FC = () => {
               </div>
             </div>
             
-            
-=======
-      </nav>
+            <div className="relative flex justify-center">
+              <div className="relative w-64 h-64">
+                <CapsuleAnimation size="large" color="blue" className="absolute top-0 left-0" />
+                <CapsuleAnimation size="medium" color="mint" className="absolute top-12 right-8" floating />
+                <CapsuleAnimation size="small" color="purple" className="absolute bottom-0 left-16" floating />
+                <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/20 rounded-full blur-3xl"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
       <section className="py-20 bg-white">
@@ -138,9 +142,9 @@ const HomePage: React.FC = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section>
 
- {/* CTA Section */}
+      {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-emerald-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
@@ -206,4 +210,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default HomePage;
