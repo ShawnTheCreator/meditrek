@@ -1,10 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import api from '../services/api';
+import { User, ApiError } from '../types/auth.types';
 
 interface AuthContextType {
   user: User | null;
@@ -12,6 +8,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,38 +27,58 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Check for existing token on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Verify token and get user data
+      getCurrentUser();
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const getCurrentUser = async () => {
+    try {
+      const response = await api.get('/auth/me');
+      setUser(response.data);
+    } catch (error) {
+      localStorage.removeItem('token');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (email && password) {
-      setUser({
-        id: '1',
-        name: 'Dr. Sarah Johnson',
-        email: email
-      });
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { token, ...userData } = response.data;
+      
+      localStorage.setItem('token', token);
+      setUser(userData);
       return true;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
-    return false;
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (name && email && password) {
-      setUser({
-        id: '1',
-        name: name,
-        email: email
-      });
+    try {
+      const response = await api.post('/auth/register', { name, email, password });
+      const { token, ...userData } = response.data;
+      
+      localStorage.setItem('token', token);
+      setUser(userData);
       return true;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Registration failed');
     }
-    return false;
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setUser(null);
   };
 
@@ -70,7 +87,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isAuthenticated: !!user,
     login,
     signup,
-    logout
+    logout,
+    loading
   };
 
   return (
