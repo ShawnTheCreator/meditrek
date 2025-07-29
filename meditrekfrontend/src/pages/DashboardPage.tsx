@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from './components/ui/card';
 import { Activity, AlertTriangle, TrendingUp, Users } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import api from '../utils/api'; // axios instance with auth token
+import { useAuth } from '../contexts/AuthContext';
+import api from '../services/api'; // axios instance with auth token
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
