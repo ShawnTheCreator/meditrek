@@ -77,7 +77,9 @@ const DashboardPage: React.FC = () => {
         });
         
         const data = res.data;
+        console.log('Dashboard API Response:', data); // Debug log
 
+        
         setStats([
           {
             title: 'Active Patients',
@@ -112,9 +114,14 @@ const DashboardPage: React.FC = () => {
         setRecentAlerts(data.recentAlerts || []);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+        
         if (error.response?.status === 401) {
           console.error('Authentication failed - token may be expired');
           // You might want to redirect to login or refresh token here
+        } else if (error.response?.status === 404) {
+          console.error('Dashboard endpoint not found - check your backend routes');
         }
       }
     };

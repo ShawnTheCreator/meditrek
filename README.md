@@ -1,7 +1,9 @@
 # 🧠 MediTrek – AI-Powered Health Assistant
 
 Test it out yourself, login with these details to get a demo experience
+
 email: admin@gmail.com
+
 password: Monkey&River#2025
 
 MediTrek is a smart, AI-powered health assistant designed to help users **track their health**, **receive personalized tips**, and **detect early signs of illness**. It bridges the healthcare access gap, especially in underserved or rural areas, by offering accessible, intelligent support 24/7.

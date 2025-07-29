@@ -98,19 +98,78 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-// Protected route - dashboard
+// Protected route - dashboard (UPDATED)
 router.get('/dashboard', auth, async (req, res) => {
   try {
-    res.json({
-      message: `Welcome to your dashboard, ${req.user.name}!`,
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email
-      }
-    });
+    console.log('Dashboard route hit by user:', req.user.name); // Debug log
+    
+    // You can fetch real data from your MongoDB collections here
+    // For now, I'll provide sample data that matches your frontend expectations
+    
+    const dashboardData = {
+      stats: {
+        activePatients: '156',
+        activePatientsChange: '+12%',
+        activePatientsChangeType: 'positive',
+        criticalAlerts: '3',
+        criticalAlertsChange: '-25%',
+        criticalAlertsChangeType: 'negative',
+        diagnosticsToday: '24',
+        diagnosticsTodayChange: '+8%',
+        diagnosticsTodayChangeType: 'positive',
+        systemUptime: '99.8%',
+        systemUptimeChange: '+0.2%',
+        systemUptimeChangeType: 'positive'
+      },
+      recentAlerts: [
+        {
+          id: 1,
+          patient: 'John Doe',
+          type: 'Blood Pressure Alert',
+          severity: 'high',
+          time: '2 mins ago',
+          value: '180/120'
+        },
+        {
+          id: 2,
+          patient: 'Jane Smith',
+          type: 'Heart Rate Alert',
+          severity: 'medium',
+          time: '15 mins ago',
+          value: '105 BPM'
+        },
+        {
+          id: 3,
+          patient: 'Bob Johnson',
+          type: 'Temperature Alert',
+          severity: 'low',
+          time: '1 hour ago',
+          value: '99.8°F'
+        },
+        {
+          id: 4,
+          patient: 'Sarah Wilson',
+          type: 'Blood Pressure Alert',
+          severity: 'medium',
+          time: '45 mins ago',
+          value: '145/90'
+        },
+        {
+          id: 5,
+          patient: 'Mike Davis',
+          type: 'Heart Rate Alert',
+          severity: 'low',
+          time: '2 hours ago',
+          value: '95 BPM'
+        }
+      ]
+    };
+
+    console.log('Sending dashboard data:', dashboardData); // Debug log
+    res.json(dashboardData);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Dashboard API Error:', error);
+    res.status(500).json({ message: 'Failed to fetch dashboard data' });
   }
 });
 
