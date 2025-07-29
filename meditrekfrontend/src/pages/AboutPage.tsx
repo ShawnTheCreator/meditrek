@@ -13,28 +13,35 @@ const AboutPage: React.FC = () => {
     'Multi-device Compatibility'
   ];
 
-  const team = [
-    {
-      name: 'Shawn Peter Chareka',
-      role: 'Software Engineer',
-      bio: 'A computer science student with experience in software engineering.'
-    },
-    {
-      name: 'Michael Chen',
-      role: 'Chief Technology Officer',
-      bio: 'Former Google engineer specializing in healthcare technology solutions.'
-    },
-    {
-      name: 'Dr. James Rodriguez',
-      role: 'VP of Clinical Operations',
-      bio: 'Emergency medicine specialist with expertise in hospital systems.'
-    },
-    {
-      name: 'Lisa Thompson',
-      role: 'Head of Compliance',
-      bio: 'Healthcare law expert ensuring regulatory compliance and data security.'
-    }
-  ];
+const team = [
+  {
+    name: 'Shawn Peter Chareka',
+    role: 'Software Engineer',
+    bio: 'A computer science student with experience in software engineering.',
+  },
+  {
+    name: 'Leon Qhoba',
+    role: 'Frontend Developer',
+    bio: 'Physics and computer science student who is into frontend development.',
+  },
+  {
+    name: 'Tshegofatso Mkhabela',
+    role: 'Machine Learning Enthusiast',
+    bio: 'A computer science student that’s a fan of Python and machine learning.',
+  },
+  {
+    name: 'Ngonidzashe Mwelo',
+    role: 'Frontend Developer',
+    bio: 'IT student passionate about frontend development.',
+  },
+  
+  {
+    name: 'Sakhile Ndlazi',
+    role: 'Backend Developer',
+    bio: 'Aspiring software engineering student passionate about using technology to solve real-world problems. With a background as a professional pilot and flight instructor, brings a unique perspective to the work.',
+  },
+];
+
 
   return (
     <div className="min-h-screen bg-white">
