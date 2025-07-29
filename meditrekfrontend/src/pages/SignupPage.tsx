@@ -32,20 +32,25 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
 
     if (!agreedToTerms) {
       setError('Please agree to the terms and conditions');
-      setIsLoading(false);
       return;
     }
 
     if (!passwordsMatch) {
       setError('Passwords do not match');
-      setIsLoading(false);
       return;
     }
+
+    // Check password strength before submitting
+    if (Object.values(passwordStrength).includes(false)) {
+      setError('Password does not meet the strength requirements');
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const success = await signup(formData.name, formData.email, formData.password);
@@ -54,7 +59,7 @@ const SignupPage: React.FC = () => {
       } else {
         setError('Failed to create account. Please try again.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
@@ -108,6 +113,7 @@ const SignupPage: React.FC = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 placeholder="Enter your full name"
+                autoComplete="name"
               />
             </div>
 
@@ -124,6 +130,7 @@ const SignupPage: React.FC = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 placeholder="Enter your email"
+                autoComplete="email"
               />
             </div>
 
@@ -141,11 +148,13 @@ const SignupPage: React.FC = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors pr-12"
                   placeholder="Create a password"
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -195,11 +204,13 @@ const SignupPage: React.FC = () => {
                       : 'border-gray-300'
                   }`}
                   placeholder="Confirm your password"
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -222,8 +233,8 @@ const SignupPage: React.FC = () => {
                 I agree to the{' '}
                 <Link to="/terms" className="text-blue-600 hover:text-blue-700">
                   Terms of Service
-                </Link>
-                {' '}and{' '}
+                </Link>{' '}
+                and{' '}
                 <Link to="/privacy" className="text-blue-600 hover:text-blue-700">
                   Privacy Policy
                 </Link>

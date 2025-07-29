@@ -26,7 +26,7 @@ const HomePage: React.FC = () => {
     {
       icon: Shield,
       title: 'Secure & Compliant',
-      description: 'HIPAA-compliant platform ensuring the highest standards of data security.'
+      description: 'POPIA-compliant platform ensuring the highest standards of data security.'
     },
     {
       icon: Users,
