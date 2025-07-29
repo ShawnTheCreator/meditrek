@@ -1,5 +1,9 @@
 # 🧠 MediTrek – AI-Powered Health Assistant
 
+Test it out yourself, login with these details to get a demo experience
+email: admin@gmail.com
+password: Monkey&River#2025
+
 MediTrek is a smart, AI-powered health assistant designed to help users **track their health**, **receive personalized tips**, and **detect early signs of illness**. It bridges the healthcare access gap, especially in underserved or rural areas, by offering accessible, intelligent support 24/7.
 
 ---
@@ -18,7 +22,7 @@ In 2025, over 5.1 million South Africans are expected to live with diabetes, wit
 - Track health test results (e.g. glucose, blood pressure)
 - Get AI-powered alerts when health data is risky
 - Receive personalized, local health tips
-- (Optional) Chat with an AI health assistant
+- Chat with an AI health assistant
 
 ### 📈 Diagnostic Test Management (CRUD)
 

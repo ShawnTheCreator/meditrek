@@ -83,7 +83,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Protected route example - get current user
+// Protected route - get current user
 router.get('/me', auth, async (req, res) => {
   try {
     res.json({
@@ -92,6 +92,22 @@ router.get('/me', auth, async (req, res) => {
       email: req.user.email,
       notificationThreshold: req.user.notificationThreshold,
       emailNotifications: req.user.emailNotifications
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Protected route - dashboard
+router.get('/dashboard', auth, async (req, res) => {
+  try {
+    res.json({
+      message: `Welcome to your dashboard, ${req.user.name}!`,
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        email: req.user.email
+      }
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
