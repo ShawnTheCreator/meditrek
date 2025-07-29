@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
+=======
+>>>>>>> f212c1fe154cdba9ed3a9744d9bee14425dbc580
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Activity, Bell, Users } from 'lucide-react';
 import CapsuleAnimation from '../components/CapsuleAnimation';
@@ -61,6 +64,7 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </div>
+<<<<<<< HEAD
       </nav>
 
       {/* Hero Section */}
@@ -99,3 +103,51 @@ const HomePage: React.FC = () => {
             </div>
             
             
+=======
+      </nav>
+      {/* Hero Section */}
+      <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-blue-50 to-emerald-50"
+          style={{ transform: `translateY(${scrollY * 0.5}px)` }}
+        ></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-900 leading-tight mb-6">
+                Advanced Medical
+                <span className="text-blue-600"> Diagnostics</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Empower healthcare professionals with real-time patient monitoring, 
+                intelligent alerts, and comprehensive diagnostic tools.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/signup"
+                  className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 flex items-center justify-center space-x-2"
+                >
+                  <span>Start Free Trial</span>
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link
+                  to="/about"
+                  className="border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-lg hover:border-gray-400 transition-colors"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </div>
+            
+            <div className="relative flex justify-center">
+              <div className="relative w-64 h-64">
+                <CapsuleAnimation size="large" color="blue" className="absolute top-0 left-0" />
+                <CapsuleAnimation size="medium" color="mint" className="absolute top-12 right-8" floating />
+                <CapsuleAnimation size="small" color="purple" className="absolute bottom-0 left-16" floating />
+                <div className="absolute inset-0 bg-gradient-to-t from-transparent to-white/20 rounded-full blur-3xl"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
