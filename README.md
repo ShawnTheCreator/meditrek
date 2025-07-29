@@ -105,3 +105,18 @@ JWT_SECRET=your-secret-key
 MediTrek is **not a replacement for medical advice**. It is an AI-powered tool meant to support, not replace, professional diagnosis and treatment.
 
 ---
+
+---
+## 📷 Screenshots
+![Screenshot 1](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230417.png)  
+
+![Screenshot 2](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230434.png)  
+
+![Screenshot 3](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230451.png)  
+
+![Screenshot 4](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230501.png)  
+
+![Screenshot 5](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230519.png)  
+
+![Screenshot 6](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230525.png)  
+
