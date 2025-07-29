@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader, Check, X } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContexts';
 import CapsuleAnimation from '../components/CapsuleAnimation';
 
 const SignupPage: React.FC = () => {
