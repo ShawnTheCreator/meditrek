@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { isUnexpected } from '@azure-rest/ai-inference'
 import ModelClient from '@azure-rest/ai-inference'
 import { AzureKeyCredential } from '@azure/core-auth'
@@ -24,8 +24,18 @@ interface Message {
 const HealthChatBot = () => {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    setMessages([
+      {
+        role: 'assistant',
+        content: 'Hello, I am your health assistant. How can I help you today?',
+        timestamp: formatTime(),
+      },
+    ])
+  }, [])
 
   const formatTime = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
