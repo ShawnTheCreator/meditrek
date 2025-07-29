@@ -107,12 +107,21 @@ MediTrek is **not a replacement for medical advice**. It is an AI-powered tool m
 ---
 
 ---
-## 📷 Screenshots
-![Screenshot 1](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230417.png)  
-*Home Page*
+📷 Screenshots
+![Screenshot 1](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230417.png)
+Home Page
 
-![Screenshot 4](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230501.png)  
-*Feature*
+![Screenshot 4](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230501.png)
+Feature
+
+![Screenshot 5](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230519.png)
+Signup Page
+
+![Screenshot 6](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230525.png)
+Signin Page
+
+![Screenshot 6](meditrekfrontend/screenshots/Screenshot%202025-07-29%20234901.png)
+Dashboard
 
 ![Screenshot 5](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230519.png)  
 *Signup Page*
