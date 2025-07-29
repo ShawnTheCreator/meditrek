@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Shield, Activity, Bell, Users } from 'lucide-react';
 import CapsuleAnimation from '../components/CapsuleAnimation';
+import HealthChatBot from '../components/Bot';
 
 const HomePage: React.FC = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -110,6 +111,11 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
+      {/*chatbot*/}
+     
+     <div className="fixed bottom-6 right-6 z-50 w-full max-w-md">
+        <HealthChatBot />
+      </div>
       {/* Features Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
