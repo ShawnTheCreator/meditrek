@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Loader, Check, X } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import CapsuleAnimation from '../components/CapsuleAnimation';
 
 const SignupPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -16,8 +14,6 @@ const SignupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-
-  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const passwordStrength = {
@@ -32,34 +28,48 @@ const SignupPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     setError('');
 
     if (!agreedToTerms) {
       setError('Please agree to the terms and conditions');
+      setIsLoading(false);
       return;
     }
 
     if (!passwordsMatch) {
       setError('Passwords do not match');
+      setIsLoading(false);
       return;
     }
-
-    // Check password strength before submitting
-    if (Object.values(passwordStrength).includes(false)) {
-      setError('Password does not meet the strength requirements');
-      return;
-    }
-
-    setIsLoading(true);
 
     try {
-      const success = await signup(formData.name, formData.email, formData.password);
-      if (success) {
-        navigate('/dashboard');
-      } else {
-        setError('Failed to create account. Please try again.');
+      const response = await fetch('https://meditrek.onrender.com/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        })
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.message || 'Failed to create account');
+        setIsLoading(false);
+        return;
       }
-    } catch {
+
+      const data = await response.json();
+
+      // Optionally store token or user data here if returned
+      // e.g., localStorage.setItem('token', data.token);
+
+      navigate('/dashboard');
+    } catch (err) {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
@@ -76,13 +86,6 @@ const SignupPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-emerald-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        {/* Animated Capsule Formation */}
-        <div className="flex justify-center space-x-4">
-          <CapsuleAnimation size="small" color="blue" floating />
-          <CapsuleAnimation size="small" color="mint" floating />
-          <CapsuleAnimation size="small" color="purple" floating />
-        </div>
-
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center">
             <h2 className="text-3xl font-serif font-bold text-gray-900 mb-2">
@@ -113,7 +116,6 @@ const SignupPage: React.FC = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 placeholder="Enter your full name"
-                autoComplete="name"
               />
             </div>
 
@@ -130,7 +132,6 @@ const SignupPage: React.FC = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 placeholder="Enter your email"
-                autoComplete="email"
               />
             </div>
 
@@ -148,19 +149,16 @@ const SignupPage: React.FC = () => {
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors pr-12"
                   placeholder="Create a password"
-                  autoComplete="new-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
 
-              {/* Password Strength Indicator */}
               {formData.password && (
                 <div className="mt-3 space-y-2">
                   <div className="text-sm text-gray-600">Password strength:</div>
@@ -204,13 +202,11 @@ const SignupPage: React.FC = () => {
                       : 'border-gray-300'
                   }`}
                   placeholder="Confirm your password"
-                  autoComplete="new-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
