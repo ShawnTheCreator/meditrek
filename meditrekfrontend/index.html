@@ -1,17 +1,17 @@
-==<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./icon1.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meditrek Frontend</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.css" />
   </head>
   <body>
     <div id="root"></div>
 
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Cookie Consent scripts -->
     <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
     <script>
       window.cookieconsent.initialise({
@@ -25,6 +25,18 @@
           dismiss: "Got it!",
           link: "Learn more",
           href: "/privacy"
+        },
+        onInitialise: function(status) {
+          const popup = document.querySelector(".cc-window");
+          if (popup) {
+            popup.style.position = "fixed";
+            popup.style.top = "50%";
+            popup.style.left = "50%";
+            popup.style.transform = "translate(-50%, -50%)";
+            popup.style.width = "auto";
+            popup.style.maxWidth = "90%";
+            popup.style.zIndex = "10000";
+          }
         }
       });
     </script>
