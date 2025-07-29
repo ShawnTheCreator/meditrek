@@ -1,63 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 import { Search, Filter, Calendar, Download, Plus, Activity } from 'lucide-react';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL; // from .env
 
 const DiagnosticsPage: React.FC = () => {
+  const { user, token } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [diagnostics, setDiagnostics] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const diagnostics = [
-    {
-      id: 1,
-      patient: 'John Smith',
-      type: 'Blood Analysis',
-      status: 'completed',
-      date: '2025-01-15',
-      time: '10:30 AM',
-      priority: 'high',
-      results: 'Elevated cholesterol levels detected'
-    },
-    {
-      id: 2,
-      patient: 'Sarah Johnson',
-      type: 'ECG Monitoring',
-      status: 'in-progress',
-      date: '2025-01-15',
-      time: '11:15 AM',
-      priority: 'medium',
-      results: 'Monitoring ongoing...'
-    },
-    {
-      id: 3,
-      patient: 'Michael Brown',
-      type: 'X-Ray Chest',
-      status: 'completed',
-      date: '2025-01-14',
-      time: '2:45 PM',
-      priority: 'low',
-      results: 'No abnormalities detected'
-    },
-    {
-      id: 4,
-      patient: 'Emily Davis',
-      type: 'MRI Brain',
-      status: 'pending',
-      date: '2025-01-16',
-      time: '9:00 AM',
-      priority: 'high',
-      results: 'Scheduled for tomorrow'
-    },
-    {
-      id: 5,
-      patient: 'David Wilson',
-      type: 'Blood Pressure',
-      status: 'completed',
-      date: '2025-01-14',
-      time: '4:20 PM',
-      priority: 'medium',
-      results: 'Within normal range'
+  useEffect(() => {
+    const fetchDiagnostics = async () => {
+      try {
+        setLoading(true);
+        
+        // Get token from localStorage if not available from context
+        const authToken = token || localStorage.getItem('token');
+        
+        if (!authToken) {
+          console.error('No authentication token available');
+          setLoading(false);
+          return;
+        }
+
+        console.log('Fetching diagnostics from:', `${API_URL}/auth/diagnostics`);
+
+        const res = await axios.get(`${API_URL}/auth/diagnostics`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          }
+        });
+        
+        console.log('Diagnostics API Response:', res.data);
+        setDiagnostics(res.data);
+      } catch (error) {
+        console.error('Failed to fetch diagnostics data:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+        
+        if (error.response?.status === 401) {
+          console.error('Authentication failed - token may be expired');
+        } else if (error.response?.status === 404) {
+          console.error('Diagnostics endpoint not found - check your backend routes');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Only fetch if user is authenticated
+    if (user) {
+      fetchDiagnostics();
     }
-  ];
+  }, [user, token]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -83,6 +82,16 @@ const DiagnosticsPage: React.FC = () => {
     const matchesFilter = filterStatus === 'all' || diagnostic.status === filterStatus;
     return matchesSearch && matchesFilter;
   });
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -179,11 +188,49 @@ const DiagnosticsPage: React.FC = () => {
           ))}
         </div>
 
-        {filteredDiagnostics.length === 0 && (
+        {filteredDiagnostics.length === 0 && !loading && (
           <div className="text-center py-12">
             <Activity className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No diagnostics found</h3>
-            <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+            <p className="text-gray-600">
+              {diagnostics.length === 0 
+                ? "No diagnostics data available." 
+                : "Try adjusting your search or filter criteria."
+              }
+            </p>
+          </div>
+        )}
+
+        {/* Statistics Summary */}
+        {diagnostics.length > 0 && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Summary</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {diagnostics.filter(d => d.status === 'completed').length}
+                </div>
+                <div className="text-sm text-gray-600">Completed</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {diagnostics.filter(d => d.status === 'in-progress').length}
+                </div>
+                <div className="text-sm text-gray-600">In Progress</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-600">
+                  {diagnostics.filter(d => d.status === 'pending').length}
+                </div>
+                <div className="text-sm text-gray-600">Pending</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-600">
+                  {diagnostics.filter(d => d.priority === 'high').length}
+                </div>
+                <div className="text-sm text-gray-600">High Priority</div>
+              </div>
+            </div>
           </div>
         )}
       </div>

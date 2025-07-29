@@ -173,4 +173,105 @@ router.get('/dashboard', auth, async (req, res) => {
   }
 });
 
+// Add this route to your auth.js file
+
+// Protected route - diagnostics
+router.get('/diagnostics', auth, async (req, res) => {
+  try {
+    console.log('Diagnostics route hit by user:', req.user.name); // Debug log
+    
+    // You can fetch real data from your MongoDB collections here
+    // For now, providing sample data that matches your frontend expectations
+    
+    const diagnosticsData = [
+      {
+        id: 1,
+        patient: 'John Smith',
+        type: 'Blood Analysis',
+        status: 'completed',
+        date: '2025-01-15',
+        time: '10:30 AM',
+        priority: 'high',
+        results: 'Elevated cholesterol levels detected'
+      },
+      {
+        id: 2,
+        patient: 'Sarah Johnson',
+        type: 'ECG Monitoring',
+        status: 'in-progress',
+        date: '2025-01-15',
+        time: '11:15 AM',
+        priority: 'medium',
+        results: 'Monitoring ongoing...'
+      },
+      {
+        id: 3,
+        patient: 'Michael Brown',
+        type: 'X-Ray Chest',
+        status: 'completed',
+        date: '2025-01-14',
+        time: '2:45 PM',
+        priority: 'low',
+        results: 'No abnormalities detected'
+      },
+      {
+        id: 4,
+        patient: 'Emily Davis',
+        type: 'MRI Brain',
+        status: 'pending',
+        date: '2025-01-16',
+        time: '9:00 AM',
+        priority: 'high',
+        results: 'Scheduled for tomorrow'
+      },
+      {
+        id: 5,
+        patient: 'David Wilson',
+        type: 'Blood Pressure',
+        status: 'completed',
+        date: '2025-01-14',
+        time: '4:20 PM',
+        priority: 'medium',
+        results: 'Within normal range'
+      },
+      {
+        id: 6,
+        patient: 'Lisa Anderson',
+        type: 'Ultrasound',
+        status: 'pending',
+        date: '2025-01-17',
+        time: '1:30 PM',
+        priority: 'low',
+        results: 'Scheduled for later this week'
+      },
+      {
+        id: 7,
+        patient: 'Robert Taylor',
+        type: 'CT Scan',
+        status: 'in-progress',
+        date: '2025-01-15',
+        time: '3:00 PM',
+        priority: 'high',
+        results: 'Scan in progress...'
+      },
+      {
+        id: 8,
+        patient: 'Jennifer Martinez',
+        type: 'Blood Sugar Test',
+        status: 'completed',
+        date: '2025-01-14',
+        time: '9:15 AM',
+        priority: 'medium',
+        results: 'Glucose levels normal'
+      }
+    ];
+
+    console.log('Sending diagnostics data:', diagnosticsData.length, 'records'); // Debug log
+    res.json(diagnosticsData);
+  } catch (error) {
+    console.error('Diagnostics API Error:', error);
+    res.status(500).json({ message: 'Failed to fetch diagnostics data' });
+  }
+});
+
 module.exports = router;
