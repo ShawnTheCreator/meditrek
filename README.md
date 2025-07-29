@@ -117,15 +117,9 @@ Feature
 ![Screenshot 5](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230519.png)
 Signup Page
 
-![Screenshot 6](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230525.png)
+![Screenshot 8](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230525.png)
 Signin Page
 
-![Screenshot 6](meditrekfrontend/screenshots/Screenshot%202025-07-29%20234901.png)
+![Screenshot 7](meditrekfrontend/screenshots/Screenshot%202025-07-29%20234901.png)
 Dashboard
-
-![Screenshot 5](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230519.png)  
-*Signup Page*
-
-![Screenshot 6](meditrekfrontend/screenshots/Screenshot%202025-07-29%20230525.png)  
-*Signin Page*
 
