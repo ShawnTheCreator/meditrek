@@ -433,5 +433,18 @@ router.delete('/alerts/:id', auth, async (req, res) => {
     res.status(500).json({ message: 'Failed to delete alert' });
   }
 });
+// Logout endpoint
+router.post('/logout', auth, async (req, res) => {
+  try {
+    console.log(`User ${req.user.name} (${req.user.email}) logged out at ${new Date()}`);
+    
+    res.json({
+      message: 'Logged out successfully'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Logout failed' });
+  }
+});
 
 module.exports = router;

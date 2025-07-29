@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 const ChatBubbleLeftRightIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -38,8 +38,7 @@ const HealthChatBot = () => {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: "Hi! I'm your health assistant. How can I help you today?" },
   ])
-  const [notification, setNotification] = useState<string | null>(null)
-  const [isOpen, setIsOpen] = useState(false) // toggle open/close
+  const [isOpen, setIsOpen] = useState(false)
 
   const sendMessageToOpenAI = async (newMessages: any[]) => {
     const response = await axios.post(
@@ -70,39 +69,15 @@ const HealthChatBot = () => {
       const reply = await sendMessageToOpenAI(newMessages)
       setMessages([...newMessages, { role: 'assistant', content: reply }])
     } catch {
-      setMessages([...newMessages, { role: 'assistant', content: 'Something went wrong. Please try again.' }])
+      setMessages([
+        ...newMessages,
+        { role: 'assistant', content: 'Something went wrong. Please try again.' },
+      ])
     }
   }
 
-  const showNotification = (message: string) => {
-    setNotification(message)
-    setTimeout(() => setNotification(null), 6000)
-  }
-
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      try {
-        const reply = await sendMessageToOpenAI([
-          { role: 'user', content: 'Give me a short health tip' },
-        ])
-        showNotification(reply)
-      } catch {
-        showNotification('Unable to fetch health tip.')
-      }
-    }, Math.random() * (120000 - 60000) + 60000)
-
-    return () => clearInterval(interval)
-  }, [])
-
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end space-y-2">
-      {notification && (
-        <div className="bg-blue-600 text-white p-4 rounded-lg shadow-lg animate-bounce mb-4 max-w-xs">
-          {notification}
-        </div>
-      )}
-
-      {/* Toggle Button */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -113,7 +88,6 @@ const HealthChatBot = () => {
         </button>
       )}
 
-      {/* Chatbot Panel */}
       {isOpen && (
         <div className="w-96 max-w-full p-4 rounded-2xl bg-blue-50 shadow-xl flex flex-col">
           <div className="flex justify-between items-center mb-4">

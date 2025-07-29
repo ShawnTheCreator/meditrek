@@ -5,7 +5,7 @@ import CapsuleAnimation from '../components/CapsuleAnimation';
 
 const AboutPage: React.FC = () => {
   const features = [
-    'HIPAA Compliant Infrastructure',
+    'Popi Compliant Infrastructure',
     'Real-time Monitoring Systems',
     'Advanced Analytics Engine',
     'Secure Data Encryption',
@@ -15,9 +15,9 @@ const AboutPage: React.FC = () => {
 
   const team = [
     {
-      name: 'Dr. Sarah Mitchell',
-      role: 'Chief Medical Officer',
-      bio: 'Board-certified physician with 15+ years in digital health innovation.'
+      name: 'Shawn Peter Chareka',
+      role: 'Software Engineer',
+      bio: 'A computer science student with experience in software engineering.'
     },
     {
       name: 'Michael Chen',
