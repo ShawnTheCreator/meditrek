@@ -96,7 +96,7 @@ JWT_SECRET=your-secret-key
 
 - 🔄 [Render](https://render.com) – for backend (Node.js)
 - 🔼 [Vercel](https://vercel.com) – for frontend (React)
-- ☁️ [Firebase] – optional for hosting/auth if no backend
+- ☁️ [mongodb] – optional for hosting/auth if no backend
 
 ---
 
