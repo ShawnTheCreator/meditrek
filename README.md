@@ -74,7 +74,7 @@ npm install
 npm run dev
 ```
 
-Visit [http://localhost:5173](http://localhost:5173) to view the app.
+Visit [https://meditrek.netlify.app/] to view the app.
 
 ---
 

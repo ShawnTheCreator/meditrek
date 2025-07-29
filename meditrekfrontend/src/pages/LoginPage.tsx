@@ -22,14 +22,10 @@ const LoginPage: React.FC = () => {
     setError('');
 
     try {
-      const success = await login(formData.email, formData.password);
-      if (success) {
-        navigate('/dashboard');
-      } else {
-        setError('Invalid email or password');
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
+      await login(formData.email, formData.password);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Invalid email or password');
     } finally {
       setIsLoading(false);
     }
