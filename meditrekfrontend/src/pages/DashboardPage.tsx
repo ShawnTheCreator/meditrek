@@ -7,7 +7,7 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL; // from .env
 
 const DashboardPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth(); // Make sure to get token from auth context
 
   const [stats, setStats] = useState([
     {
@@ -61,7 +61,21 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await axios.get(`${API_URL}/dashboard`);
+        // Get token from localStorage if not available from context
+        const authToken = token || localStorage.getItem('token');
+        
+        if (!authToken) {
+          console.error('No authentication token available');
+          return;
+        }
+
+        // Changed endpoint to /auth/dashboard to match your server route structure
+        const res = await axios.get(`${API_URL}/auth/dashboard`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          }
+        });
+        
         const data = res.data;
 
         setStats([
@@ -95,14 +109,21 @@ const DashboardPage: React.FC = () => {
           }
         ]);
 
-        setRecentAlerts(data.recentAlerts);
+        setRecentAlerts(data.recentAlerts || []);
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
+        if (error.response?.status === 401) {
+          console.error('Authentication failed - token may be expired');
+          // You might want to redirect to login or refresh token here
+        }
       }
     };
 
-    fetchDashboard();
-  }, []);
+    // Only fetch if user is authenticated
+    if (user) {
+      fetchDashboard();
+    }
+  }, [user, token]);
 
   return (
     <DashboardLayout>
@@ -148,27 +169,34 @@ const DashboardPage: React.FC = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-6">Recent Alerts</h2>
               <div className="space-y-4">
-                {recentAlerts.map((alert) => (
-                  <div key={alert.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                        {alert.type.includes('Blood') && <Heart className="w-5 h-5 text-red-500" />}
-                        {alert.type.includes('Heart') && <Activity className="w-5 h-5 text-blue-500" />}
-                        {alert.type.includes('Temperature') && <Thermometer className="w-5 h-5 text-orange-500" />}
+                {recentAlerts.length > 0 ? (
+                  recentAlerts.map((alert) => (
+                    <div key={alert.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                          {alert.type.includes('Blood') && <Heart className="w-5 h-5 text-red-500" />}
+                          {alert.type.includes('Heart') && <Activity className="w-5 h-5 text-blue-500" />}
+                          {alert.type.includes('Temperature') && <Thermometer className="w-5 h-5 text-orange-500" />}
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-gray-900">{alert.patient}</h3>
+                          <p className="text-sm text-gray-600">{alert.type}</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{alert.patient}</h3>
-                        <p className="text-sm text-gray-600">{alert.type}</p>
+                      <div className="text-right">
+                        <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getSeverityColor(alert.severity)}`}>
+                          {alert.value}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">{alert.time}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getSeverityColor(alert.severity)}`}>
-                        {alert.value}
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">{alert.time}</p>
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p>No recent alerts</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

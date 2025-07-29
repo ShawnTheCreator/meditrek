@@ -1,13 +1,32 @@
-<!doctype html>
+==<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./icon1.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meditrek Frontend - Medical Diagnostics Web Application</title>
+    <title>Meditrek Frontend</title>
   </head>
   <body>
     <div id="root"></div>
+
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Cookie Consent scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/cookieconsent@3/build/cookieconsent.min.js"></script>
+    <script>
+      window.cookieconsent.initialise({
+        palette: {
+          popup: { background: "#007bff" },
+          button: { background: "#fff", text: "#007bff" }
+        },
+        theme: "classic",
+        content: {
+          message: "We use cookies to improve your experience.",
+          dismiss: "Got it!",
+          link: "Learn more",
+          href: "/privacy"
+        }
+      });
+    </script>
   </body>
 </html>
