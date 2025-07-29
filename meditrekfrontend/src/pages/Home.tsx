@@ -139,3 +139,22 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </section>
+
+ {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-emerald-600">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
+            Ready to Transform Your Practice?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of healthcare professionals already using Meditrek.
+          </p>
+          <Link
+            to="/signup"
+            className="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-50 transition-colors inline-flex items-center space-x-2 font-semibold"
+          >
+            <span>Get Started Today</span>
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+        </div>
+      </section>
