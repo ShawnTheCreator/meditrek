@@ -274,4 +274,164 @@ router.get('/diagnostics', auth, async (req, res) => {
   }
 });
 
+// Add this route to your auth.js file
+
+// Protected route - alerts
+router.get('/alerts', auth, async (req, res) => {
+  try {
+    console.log('Alerts route hit by user:', req.user.name); // Debug log
+    
+    // You can fetch real data from your MongoDB collections here
+    // For now, providing sample data that matches your frontend expectations
+    
+    const alertsData = [
+      {
+        id: 1,
+        patient: 'John Smith',
+        type: 'Critical Blood Pressure',
+        severity: 'critical',
+        message: 'Blood pressure reading of 180/120 mmHg detected. Immediate attention required.',
+        timestamp: '2025-01-15T10:30:00Z',
+        status: 'unread',
+        value: '180/120 mmHg'
+      },
+      {
+        id: 2,
+        patient: 'Sarah Johnson',
+        type: 'Low Heart Rate',
+        severity: 'warning',
+        message: 'Heart rate dropped to 45 BPM. Monitor closely for bradycardia symptoms.',
+        timestamp: '2025-01-15T10:18:00Z',
+        status: 'unread',
+        value: '45 BPM'
+      },
+      {
+        id: 3,
+        patient: 'Michael Brown',
+        type: 'Temperature Alert',
+        severity: 'info',
+        message: 'Body temperature elevated to 102.1°F. Consider fever management protocol.',
+        timestamp: '2025-01-15T09:45:00Z',
+        status: 'read',
+        value: '102.1°F'
+      },
+      {
+        id: 4,
+        patient: 'Emily Davis',
+        type: 'Medication Reminder',
+        severity: 'info',
+        message: 'Patient due for scheduled medication administration in 30 minutes.',
+        timestamp: '2025-01-15T09:30:00Z',
+        status: 'read',
+        value: 'Due: 10:00 AM'
+      },
+      {
+        id: 5,
+        patient: 'David Wilson',
+        type: 'Lab Results',
+        severity: 'warning',
+        message: 'Abnormal glucose levels detected in latest blood work. Review required.',
+        timestamp: '2025-01-15T08:15:00Z',
+        status: 'resolved',
+        value: '285 mg/dL'
+      },
+      {
+        id: 6,
+        patient: 'Lisa Anderson',
+        type: 'Oxygen Saturation',
+        severity: 'critical',
+        message: 'Oxygen saturation dropped to 88%. Immediate intervention required.',
+        timestamp: '2025-01-15T11:45:00Z',
+        status: 'unread',
+        value: '88% SpO2'
+      },
+      {
+        id: 7,
+        patient: 'Robert Taylor',
+        type: 'Cardiac Arrhythmia',
+        severity: 'warning',
+        message: 'Irregular heart rhythm detected. Continuous monitoring recommended.',
+        timestamp: '2025-01-15T11:20:00Z',
+        status: 'read',
+        value: 'Irregular'
+      },
+      {
+        id: 8,
+        patient: 'Jennifer Martinez',
+        type: 'Blood Sugar Alert',
+        severity: 'warning',
+        message: 'Blood glucose level is critically low. Check for hypoglycemia symptoms.',
+        timestamp: '2025-01-15T10:55:00Z',
+        status: 'unread',
+        value: '55 mg/dL'
+      },
+      {
+        id: 9,
+        patient: 'Mark Thompson',
+        type: 'Equipment Malfunction',
+        severity: 'info',
+        message: 'Monitoring device requires battery replacement within 2 hours.',
+        timestamp: '2025-01-15T08:30:00Z',
+        status: 'resolved',
+        value: 'Battery: 15%'
+      },
+      {
+        id: 10,
+        patient: 'Amanda Clark',
+        type: 'Medication Alert',
+        severity: 'warning',
+        message: 'Potential drug interaction detected. Review current medications.',
+        timestamp: '2025-01-15T07:45:00Z',
+        status: 'read',
+        value: 'Interaction Risk'
+      }
+    ];
+
+    console.log('Sending alerts data:', alertsData.length, 'records'); // Debug log
+    res.json(alertsData);
+  } catch (error) {
+    console.error('Alerts API Error:', error);
+    res.status(500).json({ message: 'Failed to fetch alerts data' });
+  }
+});
+
+
+router.put('/alerts/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    console.log(`Updating alert ${id} status to: ${status}`);
+    
+    
+    res.json({ 
+      message: 'Alert updated successfully',
+      id: parseInt(id),
+      status 
+    });
+  } catch (error) {
+    console.error('Alert update error:', error);
+    res.status(500).json({ message: 'Failed to update alert' });
+  }
+});
+
+// Protected route - delete alert
+router.delete('/alerts/:id', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    console.log(`Deleting alert ${id}`);
+    
+    // In a real app, you would delete from the database here
+    // For now, just return success
+    res.json({ 
+      message: 'Alert deleted successfully',
+      id: parseInt(id)
+    });
+  } catch (error) {
+    console.error('Alert delete error:', error);
+    res.status(500).json({ message: 'Failed to delete alert' });
+  }
+});
+
 module.exports = router;

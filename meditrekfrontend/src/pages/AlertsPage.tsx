@@ -1,62 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 import { AlertTriangle, CheckCircle, Clock, X, Eye, Archive } from 'lucide-react';
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL; // from .env
 
 const AlertsPage: React.FC = () => {
-  const [alerts, setAlerts] = useState([
-    {
-      id: 1,
-      patient: 'John Smith',
-      type: 'Critical Blood Pressure',
-      severity: 'critical',
-      message: 'Blood pressure reading of 180/120 mmHg detected. Immediate attention required.',
-      timestamp: '2025-01-15T10:30:00Z',
-      status: 'unread',
-      value: '180/120 mmHg'
-    },
-    {
-      id: 2,
-      patient: 'Sarah Johnson',
-      type: 'Low Heart Rate',
-      severity: 'warning',
-      message: 'Heart rate dropped to 45 BPM. Monitor closely for bradycardia symptoms.',
-      timestamp: '2025-01-15T10:18:00Z',
-      status: 'unread',
-      value: '45 BPM'
-    },
-    {
-      id: 3,
-      patient: 'Michael Brown',
-      type: 'Temperature Alert',
-      severity: 'info',
-      message: 'Body temperature elevated to 102.1°F. Consider fever management protocol.',
-      timestamp: '2025-01-15T09:45:00Z',
-      status: 'read',
-      value: '102.1°F'
-    },
-    {
-      id: 4,
-      patient: 'Emily Davis',
-      type: 'Medication Reminder',
-      severity: 'info',
-      message: 'Patient due for scheduled medication administration in 30 minutes.',
-      timestamp: '2025-01-15T09:30:00Z',
-      status: 'read',
-      value: 'Due: 10:00 AM'
-    },
-    {
-      id: 5,
-      patient: 'David Wilson',
-      type: 'Lab Results',
-      severity: 'warning',
-      message: 'Abnormal glucose levels detected in latest blood work. Review required.',
-      timestamp: '2025-01-15T08:15:00Z',
-      status: 'resolved',
-      value: '285 mg/dL'
-    }
-  ]);
-
+  const { user, token } = useAuth();
+  const [alerts, setAlerts] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAlerts = async () => {
+      try {
+        setLoading(true);
+        
+        // Get token from localStorage if not available from context
+        const authToken = token || localStorage.getItem('token');
+        
+        if (!authToken) {
+          console.error('No authentication token available');
+          setLoading(false);
+          return;
+        }
+
+        console.log('Fetching alerts from:', `${API_URL}/auth/alerts`);
+
+        const res = await axios.get(`${API_URL}/auth/alerts`, {
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          }
+        });
+        
+        console.log('Alerts API Response:', res.data);
+        setAlerts(res.data);
+      } catch (error) {
+        console.error('Failed to fetch alerts data:', error);
+        console.error('Error response:', error.response?.data);
+        console.error('Error status:', error.response?.status);
+        
+        if (error.response?.status === 401) {
+          console.error('Authentication failed - token may be expired');
+        } else if (error.response?.status === 404) {
+          console.error('Alerts endpoint not found - check your backend routes');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Only fetch if user is authenticated
+    if (user) {
+      fetchAlerts();
+    }
+  }, [user, token]);
 
   const getSeverityConfig = (severity: string) => {
     switch (severity) {
@@ -113,20 +112,69 @@ const AlertsPage: React.FC = () => {
     return `${days} days ago`;
   };
 
+  const updateAlertStatus = async (id: number, status: string) => {
+    try {
+      const authToken = token || localStorage.getItem('token');
+      
+      await axios.put(`${API_URL}/auth/alerts/${id}`, 
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // Update local state
+      setAlerts(alerts.map(alert => 
+        alert.id === id ? { ...alert, status } : alert
+      ));
+    } catch (error) {
+      console.error('Failed to update alert:', error);
+    }
+  };
+
+  const deleteAlert = async (id: number) => {
+    try {
+      const authToken = token || localStorage.getItem('token');
+      
+      await axios.delete(`${API_URL}/auth/alerts/${id}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`
+        }
+      });
+
+      // Update local state
+      setAlerts(alerts.filter(alert => alert.id !== id));
+    } catch (error) {
+      console.error('Failed to delete alert:', error);
+    }
+  };
+
   const markAsRead = (id: number) => {
-    setAlerts(alerts.map(alert => 
-      alert.id === id ? { ...alert, status: 'read' } : alert
-    ));
+    updateAlertStatus(id, 'read');
   };
 
   const markAsResolved = (id: number) => {
-    setAlerts(alerts.map(alert => 
-      alert.id === id ? { ...alert, status: 'resolved' } : alert
-    ));
+    updateAlertStatus(id, 'resolved');
   };
 
   const archiveAlert = (id: number) => {
-    setAlerts(alerts.filter(alert => alert.id !== id));
+    deleteAlert(id);
+  };
+
+  const markAllAsRead = async () => {
+    const unreadAlerts = alerts.filter(alert => alert.status === 'unread');
+    
+    try {
+      // Update all unread alerts
+      for (const alert of unreadAlerts) {
+        await updateAlertStatus(alert.id, 'read');
+      }
+    } catch (error) {
+      console.error('Failed to mark all as read:', error);
+    }
   };
 
   const filteredAlerts = alerts.filter(alert => {
@@ -138,6 +186,16 @@ const AlertsPage: React.FC = () => {
 
   const criticalCount = alerts.filter(a => a.severity === 'critical' && a.status !== 'resolved').length;
   const unreadCount = alerts.filter(a => a.status === 'unread').length;
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -154,7 +212,11 @@ const AlertsPage: React.FC = () => {
             <div className="text-sm text-gray-600">
               {criticalCount} critical • {unreadCount} unread
             </div>
-            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <button 
+              onClick={markAllAsRead}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              disabled={unreadCount === 0}
+            >
               Mark All Read
             </button>
           </div>
@@ -184,6 +246,50 @@ const AlertsPage: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Summary Cards */}
+        {alerts.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Total Alerts</p>
+                  <p className="text-2xl font-bold text-gray-900">{alerts.length}</p>
+                </div>
+                <AlertTriangle className="w-8 h-8 text-gray-400" />
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Critical</p>
+                  <p className="text-2xl font-bold text-red-600">{criticalCount}</p>
+                </div>
+                <AlertTriangle className="w-8 h-8 text-red-400" />
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Unread</p>
+                  <p className="text-2xl font-bold text-blue-600">{unreadCount}</p>
+                </div>
+                <Eye className="w-8 h-8 text-blue-400" />
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-600">Resolved</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {alerts.filter(a => a.status === 'resolved').length}
+                  </p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-green-400" />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Alerts List */}
         <div className="space-y-4">
@@ -268,12 +374,15 @@ const AlertsPage: React.FC = () => {
           })}
         </div>
 
-        {filteredAlerts.length === 0 && (
+        {filteredAlerts.length === 0 && !loading && (
           <div className="text-center py-12">
             <CheckCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No alerts found</h3>
             <p className="text-gray-600">
-              {filter === 'all' ? 'No alerts to display.' : `No ${filter} alerts at this time.`}
+              {alerts.length === 0 
+                ? 'No alerts data available.' 
+                : filter === 'all' ? 'No alerts to display.' : `No ${filter} alerts at this time.`
+              }
             </p>
           </div>
         )}
